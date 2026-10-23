@@ -1,4 +1,4 @@
-# Open "your call" decisions (after Stage 1)
+# "Your call" decisions (after Stage 1): all recommendations accepted on 23 Oct 2026
 
 Gap numbers refer to 06-assumptions.md. Every other gap uses the suggested value.
 

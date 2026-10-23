@@ -23,6 +23,7 @@ All commands from the repository root.
 ```
 pytest -q                                               # all tests
 python experiments/stage1_nearfield_vs_farfield.py      # Stage 1
+python experiments/stage2_scenario.py                   # Stage 2
 ```
 
 Outputs go to `results/` (CSV and PNG).

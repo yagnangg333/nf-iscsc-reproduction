@@ -23,3 +23,15 @@
 - Eq. (5)'s Fresnel form matches the exact phase to correlation > 0.997 beyond 10 m at every angle, so it is safe for the road (nearest lane 7.5 m from the RSU).
 - On the 100 m road, a far-field beam loses more than 0.9 dB at 14.1 % of points (std 1.7 %) with the RSU at the road end (assumed), and at 33.8 % (std 2.9 %) with the RSU at mid-road. The near-field effect on this road depends strongly on where the RSU stands, which the paper does not say.
 - Paper has no near/far comparison figure, so there is nothing to match; these numbers are our own.
+- Decisions (23 Oct): Stage 1 accepted. All six "your call" recommendations accepted (gaps 5, 10, 14, 21, 26, 31). Code pushed to github.com/yagnangg333/nf-iscsc-reproduction (private).
+
+## Stage 2: road scenario (23 Oct 2026)
+
+- Files: scenario.py, tracking/models.py (Eq. 10), tests/test_scenario.py, experiments/stage2_scenario.py, config.py (heading, centre spacing).
+- Tests: 130 passed (21 channel + 109 scenario, most of them spacing/bounds checks over K and seeds).
+- Placement: fixed K, uniform positions, 3.5 m bumper gap enforced exactly with a 1-D hard-core "shift" sampler. It has the same law as rejection sampling (checked against brute-force rejection at K = 6), but plain rejection is hopeless here: a uniform layout meets the rule with probability 0.41 at K = 5, 0.01 at K = 10, 3e-6 at K = 15 and 1.5e-13 at K = 20.
+- So at K = 15-20 the road is close to full (capacity 24): mean smallest gap 3.72 m (std 0.14) at K = 15 and 3.76 m (std 0.03) at K = 20. Without the rule cars would overlap (negative gaps). "Poisson" here is far more regular than a true Poisson layout.
+- Vehicles drive towards -x at 20 m/s (ASSUMED). This is the direction Eq. (10) describes: d shrinks by v dT cos(theta).
+- Eq. (10) is a first-order step. Run without noise for 2 s it drifts from the exact straight-line track by up to 0.48 m in distance and 2.2 deg in angle (RSU 1, worst car; mean 0.41 m and 1.8 deg). Fig. 3(b) reports PF range RMSE near 0.1 m, so for Stage 3 the true tracks should come from Eq. (10) itself (the paper's state model), not exact geometry, or the filters will see a model error larger than the paper's results.
+- Eq. (10)'s beta update keeps beta * d constant, i.e. beta ~ 1/d, not 1/d^2 as assumed for beta_0 (gap 17). Also sigma_beta^2 = 0.1 (Q1) is far larger than beta itself (~1e-5). To settle in Stage 3.
+- With both RSUs at the road ends, RSU 2 sees most cars near endfire (angles -145 to -176 deg), where the near-field effect is weakest.

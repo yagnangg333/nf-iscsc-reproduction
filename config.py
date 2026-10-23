@@ -85,6 +85,10 @@ MIN_GAP = 3.5                    # m (Sec. VI); ASSUMED bumper-to-bumper (gap 6)
 LANE_CENTRES_Y = (2.5, 7.5)      # ASSUMED (gap 4): two 5 m lanes
 RSU_POSITIONS = ((0.0, -5.0), (100.0, 15.0))  # ASSUMED (gap 1): one RSU each side, 5 m off the road
 VEH_SPEED = 20.0                 # m/s, ASSUMED (gap 7)
+VEH_HEADING = -1.0               # ASSUMED: vehicles drive towards -x. Eq. (10) has d shrink by
+                                 # v dT cos(theta), which is motion along -x for theta measured
+                                 # from the +x array axis.
+CENTRE_SPACING = VEH_LENGTH + MIN_GAP   # 8 m between centres of cars in the same lane (gap 6)
 
 # ---------------- Stage 1 analysis ----------------
 CORR_THRESHOLD = 0.9             # ASSUMED: the paper gives no "material divergence" threshold;
