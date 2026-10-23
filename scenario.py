@@ -143,9 +143,10 @@ def to_polar(x, y, rsu_index):
 def initial_states(layout, rsu_index):
     """Initial state q = [theta, d, v, beta] per vehicle, as in Eq. (10).
 
-    v is the speed (m/s). beta_0 = 1 / (4 pi d^2), the round-trip form of
-    Eq. (6) at the array centre (ASSUMED, gap 17). Shape (K, 4).
+    v is the speed (m/s). beta_0 = BETA_SCALE / d = 1 / (4 pi d), because the
+    beta update in Eq. (10) keeps beta * d constant (ASSUMED constant, gap 17).
+    Shape (K, 4).
     """
     theta, d = to_polar(layout.x, layout.y, rsu_index)
-    beta = 1.0 / (4 * np.pi * d**2)
+    beta = config.BETA_SCALE / d
     return np.column_stack([theta, d, layout.speed, beta])

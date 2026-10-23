@@ -35,3 +35,13 @@
 - Eq. (10) is a first-order step. Run without noise for 2 s it drifts from the exact straight-line track by up to 0.48 m in distance and 2.2 deg in angle (RSU 1, worst car; mean 0.41 m and 1.8 deg). Fig. 3(b) reports PF range RMSE near 0.1 m, so for Stage 3 the true tracks should come from Eq. (10) itself (the paper's state model), not exact geometry, or the filters will see a model error larger than the paper's results.
 - Eq. (10)'s beta update keeps beta * d constant, i.e. beta ~ 1/d, not 1/d^2 as assumed for beta_0 (gap 17). Also sigma_beta^2 = 0.1 (Q1) is far larger than beta itself (~1e-5). To settle in Stage 3.
 - With both RSUs at the road ends, RSU 2 sees most cars near endfire (angles -145 to -176 deg), where the near-field effect is weakest.
+
+## Stage 3: tracking filters (23 Oct 2026)
+
+- Files: tracking/models.py (Eq. 9-12), tracking/pf.py (Alg. 1, Eq. 29-33), tracking/ekf.py, tracking/ukf.py, tests/test_tracking.py, experiments/stage3_tracking.py, experiments/stage3_plots.py, docs/stage3-notes.md, docs/paper_values/fig3_by_eye.csv, config.py (noise switches), scenario.py (beta_0 = 1/(4 pi d)).
+- Tests: 145 passed (15 new: noise units, noise statistics, seeds, Jacobians vs finite differences, echo and Gram vs channel.py, likelihood vs direct formula, filters with no noise).
+- beta: Eq. (10) makes beta ~ 1/d (checked), but the paper calls it a round-trip loss (~1/d^2). Table III puts noise of variance 0.1 on beta itself; with beta ~ 1e-3 that is 100-300x beta per slot. As written, |beta| grows ~2000x in 2 s, the PF collapses (ESS ~1 of 2000), angle RMSE 6-30 deg. So we also ran a "relative" beta noise (ours, not the paper's).
+- With relative beta noise and deg^2 angles (5 seeds, K = 5-20): PF2000 angle 0.93-1.11 deg (paper ~1.6-2.1), range 0.23 m (paper ~0.08), velocity 0.80 m/s (paper ~0.8). EKF and UKF are about as good as the PF and nearly flat in K; the paper shows them much worse and degrading with K. Not reproduced.
+- rad^2 angles give ~60 deg angle RMSE for every filter, far from Fig. 3(a), which supports the deg^2 reading.
+- Times: ordering matches (EKF fastest, PF2000 slowest), absolute values are 100-1000x the paper's (PF500 194 ms at K = 20 vs "below 2 ms"), because Eq. (9) makes each measurement a 310-element vector.
+- Eq. (10) + Table III noise drifts from straight-line tracks by RMS ~5 deg, 5.5 m, 6.2 m/s over 2 s; 21 of 500 tracks reach a negative speed.

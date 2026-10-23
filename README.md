@@ -24,6 +24,8 @@ All commands from the repository root.
 pytest -q                                               # all tests
 python experiments/stage1_nearfield_vs_farfield.py      # Stage 1
 python experiments/stage2_scenario.py                   # Stage 2
+python experiments/stage3_tracking.py --angle-unit deg2 --beta-noise relative   # Stage 3 (about 15 min on 4 cores)
+python experiments/stage3_plots.py deg2_relative
 ```
 
 Outputs go to `results/` (CSV and PNG).
@@ -50,3 +52,5 @@ docs/              Stage 0 parameter table, gaps, notes, task brief
 - SI units inside the code (m, s, Hz, W, rad). Degrees and dB only on plots.
 - theta is measured from the array axis (the road direction); 90 deg is broadside.
 - Every random process takes a seed; experiments run at least 5 seeds.
+
+Stage 3 options: `--angle-unit deg2|rad2` and `--beta-noise absolute|relative` choose how the Table III noise values are read (see `docs/stage3-notes.md`); `--ks`, `--seeds` and `--workers` set the sweep. Set `OMP_NUM_THREADS=1` when running with several workers so the timing is per core.

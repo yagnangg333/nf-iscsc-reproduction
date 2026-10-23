@@ -68,6 +68,28 @@ Q1_DIAG = (0.02, 0.3, 1.0, 0.1)  # process noise diag(theta, d, v, beta) (T-III)
 Q2_DIAG = (0.04, 0.06, 1.0)      # measurement noise diag(sigma1^2, sigma2^2, sigma3^2) (T-III)
 NS_PARTICLES = (500, 2000)       # particle counts (Sec. VI-A)
 
+# How the Table III numbers are turned into SI variances. The paper gives no units,
+# so these switches make every reading explicit (docs/06-assumptions.md, gaps 14 and 17).
+#   angle_unit  "deg2": sigma_theta^2 = 0.02 deg^2 (accepted reading, gap 14)
+#               "rad2": sigma_theta^2 = 0.02 rad^2 (sensitivity run)
+#   beta_noise  "absolute": u_beta ~ N(0, 0.1), on beta itself, as Eq. (10)-(12) write it
+#               "relative": u_beta ~ N(0, 0.1 beta^2), i.e. 32% of beta (ours, not in the paper)
+ANGLE_UNIT = "deg2"
+BETA_NOISE = "absolute"
+# beta_0 = BETA_SCALE / d. Eq. (10) keeps beta * d constant, so beta ~ 1/d. The constant
+# 1/(4 pi) comes from Eq. (6) (Gamma = 1/(sqrt(4 pi) d)); its exact value is ASSUMED (gap 17).
+BETA_SCALE = 1.0 / (4 * np.pi)
+
+
+def q1_si(angle_unit=ANGLE_UNIT):
+    """Process noise variances [theta (rad^2), d (m^2), v ((m/s)^2), beta] in SI."""
+    th, d, v, b = Q1_DIAG
+    if angle_unit == "deg2":
+        th = th * (np.pi / 180) ** 2
+    elif angle_unit != "rad2":
+        raise ValueError(angle_unit)
+    return np.array([th, d, v, b])
+
 # ---------------- optimisation ----------------
 EPS_WEIGHT = 0.5                 # weight epsilon in Eq. (34a) (T-III)
 EPS_TOL = 0.1                    # convergence tolerance in Alg. 3 (T-III)
