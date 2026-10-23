@@ -45,3 +45,4 @@
 - rad^2 angles give ~60 deg angle RMSE for every filter, far from Fig. 3(a), which supports the deg^2 reading.
 - Times: ordering matches (EKF fastest, PF2000 slowest), absolute values are 100-1000x the paper's (PF500 194 ms at K = 20 vs "below 2 ms"), because Eq. (9) makes each measurement a 310-element vector.
 - Eq. (10) + Table III noise drifts from straight-line tracks by RMS ~5 deg, 5.5 m, 6.2 m/s over 2 s; 21 of 500 tracks reach a negative speed.
+- Decision (23 Oct): later stages use the "relative" beta noise (our variant, 32% of beta per slot). The as-written run stays in results/ for the report.

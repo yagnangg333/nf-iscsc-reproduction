@@ -75,7 +75,7 @@ NS_PARTICLES = (500, 2000)       # particle counts (Sec. VI-A)
 #   beta_noise  "absolute": u_beta ~ N(0, 0.1), on beta itself, as Eq. (10)-(12) write it
 #               "relative": u_beta ~ N(0, 0.1 beta^2), i.e. 32% of beta (ours, not in the paper)
 ANGLE_UNIT = "deg2"
-BETA_NOISE = "absolute"
+BETA_NOISE = "relative"               # chosen by the project owner on 23 Oct 2026 (as-written run kept for the report)
 # beta_0 = BETA_SCALE / d. Eq. (10) keeps beta * d constant, so beta ~ 1/d. The constant
 # 1/(4 pi) comes from Eq. (6) (Gamma = 1/(sqrt(4 pi) d)); its exact value is ASSUMED (gap 17).
 BETA_SCALE = 1.0 / (4 * np.pi)
