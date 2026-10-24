@@ -18,7 +18,7 @@ Files: allocation.py (Eqs. 20, 22-25, Alg. 2), beamforming.py (problem (41), Alg
 1. Interference from RSU m' reaches vehicle k over that RSU's own channel H_{m',k}. The paper writes H_{m,k} for every term, which is not physical with two RSUs.
 2. CRB terms and DT tasks count only for served pairs (xi = 1). Otherwise every vehicle adds a CRB term at both RSUs.
 3. One sensing matrix R_m per RSU (the paper indexes it by k and i as well; a sum of PSD matrices is one PSD matrix).
-4. Exact subspace reduction: the optimum lies in the span of A, dA/dtheta, dA/dd and H for all vehicles of that RSU. Dimension about 20-25 at K = 5 and about 50 at K = 20 (of Nt = 256). Tests show the FIM, the channel gain and the rate are unchanged.
+4. Exact subspace reduction: the optimum lies in the span of A, dA/dtheta, dA/dd and H for all vehicles of that RSU. Dimension about 20-25 at K = 5 and about 50 at K = 20 (of Nt = 310). Tests show the FIM, the channel gain and the rate are unchanged.
 5. Solver. CVXPY (CLARABEL, SCS) fails at the real SNR: SCS returned beams 31% over the power limit. We use L-BFGS on a factorisation X = (P/S) Y Y^H (Burer-Monteiro), which keeps power and PSD exactly. Checked against CLARABEL on a low-SNR case (test, both SPG and L-BFGS match or beat it).
 6. L in Eq. (24) needs the RCRB of the "previous slot". We use the previous AO round (cars move 0.4 m per slot), starting from L = |nu3|.
 7. rho: one value per RSU found by bisection on the objective, beams rescaled to the power left after P_Comp. The paper gives no rho update rule.
@@ -41,7 +41,7 @@ With Table III's nu1 = 243.2e6 cycles/deg and nu2 = 121.6e6 cycles/m, a distance
 | 20 | greedy flip | 3.8 +/- 1.2 | 1.6 | 5.4e-3 | 9e-2 | 7.3 | 6.3 |
 
 - Ordering: reproduced. HH beats greedy at every K (rate and both RCRBs), and the gap grows with K (4% at K = 5, 30% at K = 20). Greedy with random flip is the worst of our schemes; in the paper it beats greedy. Our flip moves 20% of cars to the far RSU (gap 30), which costs more than greedy's mistakes.
-- Rate level: not reproduced. Ours is 4-5 times the paper's. Our SNR is about 50 dB with Table III's Pt, Nt = 256 and -30 dBm noise; the paper does not give enough to explain 3-4 bps/Hz.
+- Rate level: not reproduced. Ours is 4-5 times the paper's. Our SNR is about 50 dB with Table III's Pt, Nt = 310 and -30 dBm noise; the paper does not give enough to explain 3-4 bps/Hz.
 - Angle RCRB: same order as the paper for HH (1e-3 deg). Greedy does not blow up with K as in Fig. 6.
 - Distance RCRB: not reproduced. Ours is about 1 m and nearly flat in K; the paper goes from 4e-3 m to 2.4 m. Our median is 0.2-0.4 m: a few far endfire cars dominate the mean.
 - Non-semantic HH: rate drop 26.5% at every K (paper: 18%). It equals 1 - rho / iota = 1 - 0.81 / 1.1 = 26.4%, because rho settles at its lower bound rho_LB = 0.81. The paper's 18% would mean rho about 0.9. The RCRBs are the same with and without semantics, as in the paper.
