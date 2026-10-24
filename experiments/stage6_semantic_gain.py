@@ -85,10 +85,12 @@ def run(k, seed, dbits, scheme, n_max):
     rcrb_t = np.rad2deg(np.sqrt(r["crb_theta"]))
     rcrb_d = np.sqrt(r["crb_d"])
     row.update(feasible=True, rate_bps=r["rate_bps"].mean(), rcrb_theta_deg=rcrb_t.mean(),
+               eta=float(np.sum(r["crb_d"] + r["crb_theta"])),               # sum of CRBs (m^2 + rad^2), as in (34)
                rcrb_d_m=rcrb_d.mean(), rcrb_d_m_median=np.median(rcrb_d),
                rho_mean=float(r["rho"][xi > 0].mean()), p_comp_mw=1e3 * r["p_comp"].sum(),
                p_dt_mw=1e3 * r["p_dt"].sum(), f_ghz_max=r["f"].sum(axis=1).max() / 1e9,
-               n_rsu0=int(xi[0].sum()), sa_steps=len(hist), seconds=time.time() - t0)
+               n_rsu0=int(xi[0].sum()), assign="".join(str(int(v)) for v in assign),
+               sa_steps=len(hist), seconds=time.time() - t0)
     return row
 
 

@@ -68,7 +68,7 @@
 - Fig. 8 reproduced with C = 1000 (10.1 GHz at 0.01 s for 100 Kb). Fig. 9 shape reproduced (f^2, prop. to D), level 5000x the paper's; the paper's level needs C = 0.2 cycles/bit.
 - Paper's own text and figures disagree twice (Fig. 6 greedy at K = 20, Fig. 7 HH at K = 20).
 
-## Stage 6: the 20% semantic gain at 1, 10 and 100 Kb (24 Oct 2026; [18] benchmark still to come)
+## Stage 6: the 20% semantic gain at 1, 10 and 100 Kb (24 Oct 2026)
 
 - Files: experiments/stage6_semantic_gain.py, experiments/stage6_plots.py, docs/stage6-notes.md, docs/paper_values/fig5_nr1_by_eye.csv, beamforming.py (rho warm-start fallback), tests (2 new).
 - Feasibility with Table III: 1 Kb works at all K; 10 Kb only at K = 5 (one car needs 0.67-1.33 GHz of 5.8); 100 Kb never (one car needs 6.7 GHz).
@@ -77,3 +77,6 @@
 - HH over HH with Nr = 1: 25% (K = 5) to 50% (K = 20); paper flat 80%. Nr = 1 also has 2.5-3.4x worse RCRB.
 - 10 Kb, K = 5: 12 +/- 50%. One seed: SA got stuck on a poor island of feasible assignments (exhaustive check over 32 shows the same best assignment for both schemes).
 - Fixed: a warm-started rho could make a feasible SA candidate look infeasible under high P_DT. No effect on Stage 5 or these numbers.
+- [18] benchmark (baselines.py): problem (16) by SDR (20) + Eq. (21), extended to two RSUs; R_min swept. CVXPY only works on small cases (memory at K = 20, accuracy), so runs use our L-BFGS solver with an augmented Lagrangian; the two agree within 0.25%. 7 new tests.
+- HH (Nr = 3) has smaller sum-CRB than [18] at every R_min: the benchmark loses on rate and sensing.
+- Given HH-Nr = 1's own per-car rates, [18] meets them with 3-25% smaller sum-CRB. So HH's gain at equal-or-better accuracy is iota / rho only: 36% (K = 5, 10), 28 +/- 11% (K = 20), 14% at 10 Kb. Paper's Fig. 5 shows 15% -> 219% over K. Not reproduced.

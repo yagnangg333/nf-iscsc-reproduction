@@ -542,7 +542,7 @@ def _logm(X, floor):
 
 
 def solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start=None,
-                      max_iter=config.LBFGS_MAX_ITER, trace=None):
+                      max_iter=config.LBFGS_MAX_ITER, trace=None, extra=None):
     """Alg. 3 line 3 by L-BFGS on a factorised form (our default solver).
 
     Each matrix is written X = (P_m / S_m) Y Y^H with S_m the sum of ||Y||_F^2 over the
@@ -551,6 +551,7 @@ def solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start
     square (full rank allowed), a local minimum where Y is rank-deficient is a global
     minimum of the convex problem (41). Checked against CLARABEL in the tests.
     More power never raises (41a), so using the whole budget loses nothing.
+    extra(W, R) -> (f, gW, gR) adds a term to the objective (used by baselines.py for [18]).
     """
     from scipy.optimize import minimize
 
@@ -604,6 +605,11 @@ def solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start
         if not np.isfinite(f):
             return 1e30, np.zeros_like(z)
         gW, gR = g
+        if extra is not None:
+            fe, eW, eR = extra(Wd, Rl)
+            f += fe
+            gW = {key: gW[key] + eW[key] for key in gW}
+            gR = [gR[m] + eR[m] for m in range(M)]
         Gs = [gR[m] if key is None else gW[key] for m, key in blocks]
         inner = np.zeros(M)
         for (m, _), G, X in zip(blocks, Gs, xs):

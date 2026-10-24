@@ -14,7 +14,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-CVXPY is outside the base library list (NumPy, SciPy, Matplotlib, Pandas) and was added with the project owner's approval, with the free solvers SCS and CLARABEL. In Stage 5 it failed at the real SNR, so the beamforming uses our own L-BFGS solver; CVXPY (CLARABEL) is only used in a test to check that solver on a low-SNR case (docs/stage5-notes.md).
+CVXPY is outside the base library list (NumPy, SciPy, Matplotlib, Pandas) and was added with the project owner's approval, with the free solvers SCS and CLARABEL. In Stage 5 it failed at the real SNR, so the beamforming uses our own L-BFGS solver; CVXPY (CLARABEL) is used only to check our solvers on small cases: Stage 5 beamforming and the [18] benchmark in Stage 6 (docs/stage5-notes.md, docs/stage6-notes.md).
 
 ## Run
 
@@ -31,6 +31,8 @@ OMP_NUM_THREADS=1 python experiments/stage5_allocation.py --workers 4 --tag main
 python experiments/stage5_plots.py --tag main
 python experiments/stage5_computing.py                                         # Stage 5, Figs. 8-9 (seconds)
 OMP_NUM_THREADS=1 python experiments/stage6_semantic_gain.py --workers 4 --tag main   # Stage 6 (about 40 min on 4 cores)
+OMP_NUM_THREADS=1 python experiments/stage6_benchmark18.py --workers 4 --tag main             # [18] R_min sweep (about 1.5 h)
+OMP_NUM_THREADS=1 python experiments/stage6_benchmark18.py --workers 4 --tag main --matched   # [18] at HH's rates (about 30 min)
 python experiments/stage6_plots.py --tag main
 ```
 

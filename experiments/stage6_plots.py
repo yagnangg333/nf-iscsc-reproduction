@@ -47,10 +47,20 @@ def main():
                        capsize=3, label=f"HH over {name}, ours")
         ax[1].plot(pw.index, 100 * (pw["HH"] / pw[base] - 1), mark + ":", color=col, mfc="none", ms=6,
                    label=f"HH over {name}, paper")
+    mpath = RESULTS / f"stage6_{a.tag}_benchmark18_matched.csv"
+    if mpath.exists():
+        mt = pd.read_csv(mpath)
+        g = mt[mt.data_kb == 1.0].groupby("K").gain_pct.agg(["mean", "std"]).reset_index()
+        name, col = SCHEMES["benchmark18_nr1"]
+        ax[1].errorbar(g.K, g["mean"], yerr=g["std"], fmt="D-", color=col, ms=4, capsize=3,
+                       label="HH Nr = 1 over [18] at the same per-car rates, ours")
+        ax[1].plot(pw.index, 100 * (pw["HH_nr1"] / pw["benchmark18_nr1"] - 1), "D:", color=col, mfc="none", ms=6,
+                   label="HH Nr = 1 over [18], paper")
     ax[1].axhline(20, color="0.4", ls="--", lw=1)
-    ax[1].text(12.5, 17, "abstract: 20%", ha="center", fontsize=8, color="0.3")
+    ax[1].text(7.5, 12, "abstract: 20%", ha="center", fontsize=8, color="0.3")
     ax[1].set_xlabel("Number of vehicles K")
     ax[1].set_ylabel("Semantic rate gain of HH (%)")
+    ax[1].set_ylim(0, 240)
     ax[1].set_title("D = 1 Kb, gain per seed, mean +/- std", fontsize=9)
     ax[1].legend(fontsize=7, frameon=False, loc="center right")
     for x in ax:
