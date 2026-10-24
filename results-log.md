@@ -80,3 +80,12 @@
 - [18] benchmark (baselines.py): problem (16) by SDR (20) + Eq. (21), extended to two RSUs; R_min swept. CVXPY only works on small cases (memory at K = 20, accuracy), so runs use our L-BFGS solver with an augmented Lagrangian; the two agree within 0.25%. 7 new tests.
 - HH (Nr = 3) has smaller sum-CRB than [18] at every R_min: the benchmark loses on rate and sensing.
 - Given HH-Nr = 1's own per-car rates, [18] meets them with 3-25% smaller sum-CRB. So HH's gain at equal-or-better accuracy is iota / rho only: 36% (K = 5, 10), 28 +/- 11% (K = 20), 14% at 10 Kb. Paper's Fig. 5 shows 15% -> 219% over K. Not reproduced.
+
+## Stage 7: measurements (24 Oct 2026; report and Task 1 comparison to follow)
+
+- Files: experiments/stage5_allocation.py (adds HH with Nr = 1, [18], Shannon rate, CRB sum, time split), experiments/stage7_measurements.py, results/stage7_measurements.{csv,md,png}.
+- Rerun is identical to Stage 5 for the four old schemes (max difference 0 over 80 rows).
+- Our measurement list (framework PDF not provided): semantic and Shannon rate, angle/distance RCRB (mean, median), CRB sum, CPU frequency, P_C&S / P_Comp / P_DT, rho, assignment and beamforming run time, feasibility at 1/10/100 Kb.
+- HH Shannon rate equals HH non-semantic's (13.3 vs 13.3 at K = 5, 9.38 vs 9.36 at K = 20): the semantic gain is all iota / rho.
+- [18] at HH-Nr = 1's per-car rates: same rate, CRB sum 2-28% lower (34 vs 34.8 at K = 5, 178 vs 247 at K = 20).
+- Run time (one core): HH assignment 3 s (K = 5) to 101 s (K = 20); final Alg. 3 5-60 s; [18] 7-111 s. The paper reports no optimisation run times.

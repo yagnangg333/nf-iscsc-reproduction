@@ -45,7 +45,7 @@ With Table III's nu1 = 243.2e6 cycles/deg and nu2 = 121.6e6 cycles/m, a distance
 - Angle RCRB: same order as the paper for HH (1e-3 deg). Greedy does not blow up with K as in Fig. 6.
 - Distance RCRB: not reproduced. Ours is about 1 m and nearly flat in K; the paper goes from 4e-3 m to 2.4 m. Our median is 0.2-0.4 m: a few far endfire cars dominate the mean.
 - Non-semantic HH: rate drop 26.5% at every K (paper: 18%). It equals 1 - rho / iota = 1 - 0.81 / 1.1 = 26.4%, because rho settles at its lower bound rho_LB = 0.81. The paper's 18% would mean rho about 0.9. The RCRBs are the same with and without semantics, as in the paper.
-- rho always reaches rho_LB. P_Comp is 2.1 mW per vehicle and P_DT is 2-21 mW in total, so beams keep 98% (K = 5) to 90% (K = 20) of Pt. CPU use is 0.6-2.3 GHz, under F^max.
+- For HH, rho always reaches rho_LB (greedy and greedy with flip end at 0.81-1.0, mean 0.85-1.0; Stage 7 tables). P_Comp is 2.1 mW per vehicle and P_DT is 2-21 mW in total, so beams keep 98% (K = 5) to 90% (K = 20) of Pt. CPU use is 0.6-2.3 GHz, under F^max.
 
 ## Figs. 8 and 9 (results/stage5_fig8_fig9.png)
 

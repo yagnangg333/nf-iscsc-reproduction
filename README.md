@@ -34,6 +34,8 @@ OMP_NUM_THREADS=1 python experiments/stage6_semantic_gain.py --workers 4 --tag m
 OMP_NUM_THREADS=1 python experiments/stage6_benchmark18.py --workers 4 --tag main             # [18] R_min sweep (about 1.5 h)
 OMP_NUM_THREADS=1 python experiments/stage6_benchmark18.py --workers 4 --tag main --matched   # [18] at HH's rates (about 30 min)
 python experiments/stage6_plots.py --tag main
+OMP_NUM_THREADS=1 python experiments/stage5_allocation.py --workers 4 --tag stage7   # Stage 7: all six schemes with timing (about 2 h)
+python experiments/stage7_measurements.py --tag stage7
 ```
 
 Outputs go to `results/` (CSV and PNG).
