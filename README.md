@@ -26,6 +26,7 @@ python experiments/stage1_nearfield_vs_farfield.py      # Stage 1
 python experiments/stage2_scenario.py                   # Stage 2
 python experiments/stage3_tracking.py --angle-unit deg2 --beta-noise relative   # Stage 3 (about 15 min on 4 cores)
 python experiments/stage3_plots.py deg2_relative
+python experiments/stage4_crb.py                                               # Stage 4 (about 3 min; needs the Stage 3 CSV)
 ```
 
 Outputs go to `results/` (CSV and PNG).
@@ -37,7 +38,7 @@ config.py          all parameters, with their source (Table III, equation, secti
 channel.py         near-field (Eq. 5) and far-field steering vectors, path loss (Eq. 6), channel (Eq. 4)
 scenario.py        road and vehicles (Stage 2)
 tracking/          PF, EKF, UKF (Stage 3)
-crb.py             Cramer-Rao bound (Stage 4)
+crb.py             Cramer-Rao bounds: paper Eqs. (15)-(19) and a posterior CRB for the filters (Stage 4)
 allocation.py      simulated annealing assignment, compute allocation (Stage 5)
 beamforming.py     beamforming and semantic extraction ratio (Stage 5)
 baselines.py       conventional ISAC baselines (Stage 6)

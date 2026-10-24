@@ -46,3 +46,12 @@
 - Times: ordering matches (EKF fastest, PF2000 slowest), absolute values are 100-1000x the paper's (PF500 194 ms at K = 20 vs "below 2 ms"), because Eq. (9) makes each measurement a 310-element vector.
 - Eq. (10) + Table III noise drifts from straight-line tracks by RMS ~5 deg, 5.5 m, 6.2 m/s over 2 s; 21 of 500 tracks reach a negative speed.
 - Decision (23 Oct): later stages use the "relative" beta noise (our variant, 32% of beta per slot). The as-written run stays in results/ for the report.
+
+## Stage 4: Cramer-Rao bound (24 Oct 2026)
+
+- Files: crb.py, tests/test_crb.py, experiments/stage4_crb.py, docs/stage4-notes.md (Eqs. 15-19 quoted and derived step by step), README.md.
+- Paper CRB: two fixes needed to make it a valid FIM. Re{} added to Eq. (16), beta* moved inside Re{} in Eq. (17); B uses d where the paper prints s. Checked with a Monte Carlo ML estimator: MSE/CRB 0.99 +/- 0.12 (angle alone), 1.10 and 1.06 (joint angle and distance).
+- Road, equal-power beams, no optimisation: angle RCRB 0.0018-0.0023 deg (Fig. 6 HH: 1e-3 to 1e-2 deg, same range). Distance RCRB 3-4 m median (Fig. 7: 5e-3 to 0.5 m). Distance not reproduced yet.
+- Filters vs bound: a one-snapshot CRB is the wrong check (filters use 100 slots and the motion model), so we added a posterior CRB (Tichavsky 1998). Angle RMSE is 1.8-3.6x the bound. Distance and velocity sit on the bound (pooled ratio 0.996-2.0); 26 of 160 single runs dip up to 4% under it, which matches the sampling spread of the optimal Kalman filter on 10-40 tracks (simulated: 0.947-1.052).
+- Echo noise: the CRB uses -30 dBm, the tracking model uses 0.04 (Table III). They differ by 46 dB; recorded, not changed.
+- Tests: 154 passed (9 new in tests/test_crb.py). Python 3.11 venv rebuilt from requirements.txt; same numbers as before.
