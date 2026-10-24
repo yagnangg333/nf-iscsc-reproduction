@@ -25,10 +25,10 @@ from tracking import models
 
 
 # ----------------------------------------------------------- B and its derivatives
-def _ah_with_derivs(theta, d):
+def _ah_with_derivs(theta, d, nr=config.NR):
     """A^H (Nr x Nt) and its derivatives w.r.t. theta and d, from Eq. (5)."""
     k = 2 * np.pi / config.WAVELENGTH
-    psi, dpsi_th, dpsi_d = models._phase_parts(np.atleast_1d(theta), np.atleast_1d(d))
+    psi, dpsi_th, dpsi_d = models._phase_parts(np.atleast_1d(theta), np.atleast_1d(d), nr)
     AH = np.exp(-1j * k * psi[0])
     return AH, -1j * k * dpsi_th[0] * AH, -1j * k * dpsi_d[0] * AH
 

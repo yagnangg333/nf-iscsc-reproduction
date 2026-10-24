@@ -51,8 +51,16 @@ N_SLOTS = 100                    # ASSUMED (gap 8): 2 s horizon, as in Fig. 4
 
 # ---------------- semantic communication ----------------
 IOTA = 1.1                       # word-to-bit factor iota (T-III)
-RHO_TABLE = 0.81                 # rho in T-III; its role is still a "your call" item (gap 21)
-F_COMP = 10.0                    # coefficient F in Eq. (20) (T-III); unit unclear, see power check
+RHO_TABLE = 0.81                 # rho in T-III; used as the lower bound rho_LB in (34i) (gap 21, accepted)
+RHO_LB = RHO_TABLE
+RHO_0 = 1.0                      # ASSUMED (gap 21): starting rho in Alg. 3
+F_COMP = 10.0                    # coefficient F in Eq. (20) (T-III); no unit given
+# Power readings (docs/stage5-power-check.md). Chosen by the project owner on 24 Oct 2026:
+# F in mW, Eq. (25) read as energy per task spread over one slot.
+F_UNIT = "mW"                    # "mW" or "W"
+DT_POWER = "energy_per_slot"     # "energy_per_slot": kappa f^2 C D / dT
+                                 # "as_written":      kappa f^3 C        (Eq. 25)
+                                 # "kappa_f3":        kappa f^3          (textbook CPU power)
 
 # ---------------- computing ----------------
 C_CYCLES_RANGE = (1e3, 2e3)      # CPU cycles per bit (T-III)
@@ -91,8 +99,16 @@ def q1_si(angle_unit=ANGLE_UNIT):
     return np.array([th, d, v, b])
 
 # ---------------- optimisation ----------------
-EPS_WEIGHT = 0.5                 # weight epsilon in Eq. (34a) (T-III)
+EPS_WEIGHT = 0.5                 # weight epsilon in Eq. (34a)/(41a) (T-III)
 EPS_TOL = 0.1                    # convergence tolerance in Alg. 3 (T-III)
+AO_MAX_ITERS = 20                # ASSUMED: cap on Alg. 3 iterations (not given)
+AO_SA_ITERS = 2                  # ASSUMED: Alg. 3 iterations while SA scores a candidate (final solve uses AO_MAX_ITERS)
+N_RANDOMISATION = 100            # ASSUMED (gap 33): Gaussian randomisation draws
+FLIP_PROB = 0.2                  # ASSUMED (gap 30): "greedy with random flip"
+SUBSPACE_TOL = 1e-9              # relative singular value cut for the beam subspace (exact up to this)
+LBFGS_MAX_ITER = 2000            # ASSUMED: iteration cap of our beamforming solver (final solves)
+LBFGS_SA_ITER = 60               # ASSUMED: iteration cap while SA scores candidate assignments (warm-started)
+MEG_MAX_ITER = 3000              # cap for the alternative MEG solver
 SA_T0 = 100.0                    # SA initial temperature (Alg. 2, line 11)
 SA_ALPHA = 0.95                  # ASSUMED (gap 28): standard geometric cooling
 SA_TMIN = 1e-3                   # ASSUMED (gap 28)

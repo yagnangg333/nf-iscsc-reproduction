@@ -93,7 +93,7 @@ def probe_beam(theta, d, power):
     return np.sqrt(power / config.NT) * channel.nf_steering(theta, d)
 
 
-def _phase_parts(theta, d):
+def _phase_parts(theta, d, nr=config.NR):
     """Pieces of A^H = exp(-j k psi) (Eq. 5) for arrays of theta, d of shape (P,).
 
     Returns psi (P, Nr, Nt) and its derivatives w.r.t. theta and d.
@@ -103,7 +103,7 @@ def _phase_parts(theta, d):
     th = np.asarray(theta, float)[:, None, None]
     dd = np.asarray(d, float)[:, None, None]
     pt = (config.centred_indices(config.NT) * config.D_T)[None, None, :]
-    pr = (config.centred_indices(config.NR) * config.D_R)[None, :, None]
+    pr = (config.centred_indices(nr) * config.D_R)[None, :, None]
     s, c = np.sin(th), np.cos(th)
     p_t = -pt * c + pt**2 * s**2 / (2 * dd)
     p_r = -pr * c + pr**2 * s**2 / (2 * dd)

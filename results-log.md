@@ -55,3 +55,15 @@
 - Filters vs bound: a one-snapshot CRB is the wrong check (filters use 100 slots and the motion model), so we added a posterior CRB (Tichavsky 1998). Angle RMSE is 1.8-3.6x the bound. Distance and velocity sit on the bound (pooled ratio 0.996-2.0); 26 of 160 single runs dip up to 4% under it, which matches the sampling spread of the optimal Kalman filter on 10-40 tracks (simulated: 0.947-1.052).
 - Echo noise: the CRB uses -30 dBm, the tracking model uses 0.04 (Table III). They differ by 46 dB; recorded, not changed.
 - Tests: 154 passed (9 new in tests/test_crb.py). Python 3.11 venv rebuilt from requirements.txt; same numbers as before.
+
+## Stage 5: assignment, beamforming and computing (24 Oct 2026)
+
+- Files: allocation.py, beamforming.py, experiments/stage5_allocation.py, stage5_computing.py, stage5_plots.py, tests/test_allocation.py, tests/test_beamforming.py, docs/stage5-notes.md, docs/paper_values/fig5_7_by_eye.csv and fig9_by_eye.csv, config.py.
+- Tests: 179 passed (25 new). Lemma 1 as printed has the wrong sign (test shows it); we use -ln|E| directly.
+- Latency (34g)/(34h) with L of Eq. (24) as written fails for all 80 final assignments (distance RCRB ~1 m x nu2 = 1.2e8 cycles > F^max T^max). Main runs use L = |nu3|. Not tuned.
+- Ordering reproduced: HH beats greedy on rate and both RCRBs at every K; gap 4% at K = 5, 30% at K = 20. Greedy with flip is worst here (better than greedy in the paper).
+- Rate 18.0 -> 12.7 bps/Hz (HH, K = 5 -> 20) vs paper 3.8 -> 2.8. Not reproduced (our SNR ~50 dB).
+- Angle RCRB 7e-4 to 1.4e-3 deg for HH (paper 1e-3 to 1.3e-2). Distance RCRB ~0.6-1 m mean, 0.2-0.4 m median, flat in K (paper 4e-3 to 2.4 m). Not reproduced.
+- Non-semantic drop 26.5% vs paper 18%. It is exactly 1 - rho_LB / iota because rho always hits 0.81.
+- Fig. 8 reproduced with C = 1000 (10.1 GHz at 0.01 s for 100 Kb). Fig. 9 shape reproduced (f^2, prop. to D), level 5000x the paper's; the paper's level needs C = 0.2 cycles/bit.
+- Paper's own text and figures disagree twice (Fig. 6 greedy at K = 20, Fig. 7 HH at K = 20).

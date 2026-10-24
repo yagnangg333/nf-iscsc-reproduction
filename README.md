@@ -27,6 +27,9 @@ python experiments/stage2_scenario.py                   # Stage 2
 python experiments/stage3_tracking.py --angle-unit deg2 --beta-noise relative   # Stage 3 (about 15 min on 4 cores)
 python experiments/stage3_plots.py deg2_relative
 python experiments/stage4_crb.py                                               # Stage 4 (about 3 min; needs the Stage 3 CSV)
+OMP_NUM_THREADS=1 python experiments/stage5_allocation.py --workers 4 --tag main   # Stage 5, Figs. 5-7 (about 1 h on 4 cores)
+python experiments/stage5_plots.py --tag main
+python experiments/stage5_computing.py                                         # Stage 5, Figs. 8-9 (seconds)
 ```
 
 Outputs go to `results/` (CSV and PNG).
