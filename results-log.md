@@ -67,3 +67,13 @@
 - Non-semantic drop 26.5% vs paper 18%. It is exactly 1 - rho_LB / iota because rho always hits 0.81.
 - Fig. 8 reproduced with C = 1000 (10.1 GHz at 0.01 s for 100 Kb). Fig. 9 shape reproduced (f^2, prop. to D), level 5000x the paper's; the paper's level needs C = 0.2 cycles/bit.
 - Paper's own text and figures disagree twice (Fig. 6 greedy at K = 20, Fig. 7 HH at K = 20).
+
+## Stage 6: the 20% semantic gain at 1, 10 and 100 Kb (24 Oct 2026; [18] benchmark still to come)
+
+- Files: experiments/stage6_semantic_gain.py, experiments/stage6_plots.py, docs/stage6-notes.md, docs/paper_values/fig5_nr1_by_eye.csv, beamforming.py (rho warm-start fallback), tests (2 new).
+- Feasibility with Table III: 1 Kb works at all K; 10 Kb only at K = 5 (one car needs 0.67-1.33 GHz of 5.8); 100 Kb never (one car needs 6.7 GHz).
+- At 1 Kb HH beats HH non-semantic by 36% (35.8-37.2%, std under 2.5%) at equal RCRB (ratios 1.01-1.07). Paper: 21-22% from Fig. 5, "20%" in the abstract. Not reproduced.
+- The 36% is exactly iota / rho_LB - 1 = 1.1 / 0.81 - 1, because rho always hits 0.81. The paper's figure would need rho about 0.90.
+- HH over HH with Nr = 1: 25% (K = 5) to 50% (K = 20); paper flat 80%. Nr = 1 also has 2.5-3.4x worse RCRB.
+- 10 Kb, K = 5: 12 +/- 50%. One seed: SA got stuck on a poor island of feasible assignments (exhaustive check over 32 shows the same best assignment for both schemes).
+- Fixed: a warm-started rho could make a feasible SA candidate look infeasible under high P_DT. No effect on Stage 5 or these numbers.

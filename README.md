@@ -30,6 +30,8 @@ python experiments/stage4_crb.py                                               #
 OMP_NUM_THREADS=1 python experiments/stage5_allocation.py --workers 4 --tag main   # Stage 5, Figs. 5-7 (about 1 h on 4 cores)
 python experiments/stage5_plots.py --tag main
 python experiments/stage5_computing.py                                         # Stage 5, Figs. 8-9 (seconds)
+OMP_NUM_THREADS=1 python experiments/stage6_semantic_gain.py --workers 4 --tag main   # Stage 6 (about 40 min on 4 cores)
+python experiments/stage6_plots.py --tag main
 ```
 
 Outputs go to `results/` (CSV and PNG).

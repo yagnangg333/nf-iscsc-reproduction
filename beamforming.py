@@ -811,6 +811,10 @@ def inner_problem(slot, xi, c, dbits, nu3, iota=config.IOTA, semantic=True, rng=
             return None
         p_left = config.PT_W - p_dt
         p_comp = np.array([allocation.comp_power(rho[m, xi[m] > 0]) if semantic else 0.0 for m in range(M)])
+        short = p_left - p_comp <= 0
+        if semantic and np.any(short & (p_left > 0)):      # a warm-started rho is too costly here:
+            rho[short] = 1.0                               # rho = 1 needs no P_Comp, so it is always allowed
+            p_comp[short] = 0.0
         if np.any(p_left - p_comp <= 0):                   # (34e) cannot leave power for beams
             info["reason"] = "power"
             return None

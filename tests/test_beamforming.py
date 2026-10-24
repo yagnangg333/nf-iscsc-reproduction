@@ -214,3 +214,21 @@ def test_written_latency_fails_for_greedy_k5():
     info = {}
     assert bf.inner_problem(slot, xi, c, dbits, nu3, info=info) is None
     assert info["reason"] == "cpu"
+
+
+def test_warm_rho_never_makes_a_feasible_case_infeasible():
+    # Choose C so that P_DT leaves each RSU less power than P_Comp needs at rho_LB but more than zero.
+    # Warm-starting at rho_LB must then fall back to rho = 1 (no P_Comp), not report "infeasible".
+    slot, d = _slot(k=5, seed=0)
+    xi = allocation.to_matrix(allocation.greedy(d))
+    dbits, nu3 = np.full(5, 1e4), np.zeros(5)
+    n = xi.sum(axis=1)
+    comp = allocation.comp_power(np.full(int(n.max()), config.RHO_LB))       # P_Comp on the fuller RSU
+    p_one = allocation.computing_plan(xi, np.full(5, 1000.0), dbits, nu3)[1] / n   # per vehicle at C = 1000
+    target = config.PT_W - comp / 2                                           # leaves comp / 2 for beams
+    c = np.full(5, 1000.0 * (target / (n.max() * p_one[np.argmax(n)])) ** (1 / 3))  # P_DT grows as C^3
+    p_left = config.PT_W - allocation.computing_plan(xi, c, dbits, nu3)[1]
+    assert p_left[np.argmax(n)] > 0 and p_left[np.argmax(n)] < comp
+    r = bf.inner_problem(slot, xi, c, dbits, nu3, latency="relaxed", rho0=config.RHO_LB,
+                         randomisation=False, ao_max=2, max_iter=60)
+    assert r is not None

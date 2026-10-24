@@ -116,3 +116,13 @@ def test_fig8_operating_point():
     # Fig. 8 (linear model): about 10 GHz for 100 Kb and 1 GHz for 10 Kb at T = 0.01 s, with C = 1000.
     assert allocation.min_frequency(1000.0, 1e5, 0.0, 0.01) == pytest.approx(10e9)
     assert allocation.min_frequency(1000.0, 1e4, 0.0, 0.01) == pytest.approx(1e9)
+
+
+def test_100kb_task_exceeds_fmax_alone():
+    # Stage 6: with Table III's lowest C, one 100 Kb task needs 6.7 GHz in 15 ms, above F^max = 5.8 GHz.
+    f = allocation.min_frequency(config.C_CYCLES_RANGE[0], 1e5, 0.0)
+    assert f == pytest.approx(1e3 * 1e5 / config.T_MAX)
+    assert f > config.F_MAX
+    # 10 Kb fits for one vehicle, but not for 10 vehicles on one RSU at the highest C.
+    assert allocation.min_frequency(config.C_CYCLES_RANGE[1], 1e4, 0.0) < config.F_MAX
+    assert 10 * allocation.min_frequency(config.C_CYCLES_RANGE[1], 1e4, 0.0) > config.F_MAX
