@@ -14,7 +14,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-CVXPY is used for the beamforming optimisation (Stage 5). It is outside the base library list (NumPy, SciPy, Matplotlib, Pandas) and was added with the project owner's approval. It runs with the free pip-installable solvers SCS and CLARABEL; no licence is needed.
+CVXPY is outside the base library list (NumPy, SciPy, Matplotlib, Pandas) and was added with the project owner's approval, with the free solvers SCS and CLARABEL. In Stage 5 it failed at the real SNR, so the beamforming uses our own L-BFGS solver; CVXPY (CLARABEL) is only used in a test to check that solver on a low-SNR case (docs/stage5-notes.md).
 
 ## Run
 
