@@ -90,3 +90,10 @@
 - [18] at HH-Nr = 1's per-car rates: same rate, CRB sum 2-28% lower (34 vs 34.8 at K = 5, 178 vs 247 at K = 20).
 - Run time (one core): HH assignment 3 s (K = 5) to 101 s (K = 20); final Alg. 3 5-60 s; [18] 7-111 s. The paper reports no optimisation run times.
 - Report written as a shared doc (summary, setup, results vs paper: 5 of 16 checks match, 3 in part; deviations; measurements; assumed parameters; RSU-side costs). No Task 1 data exists, so the cost section gives RSU-side costs only: 12.7 mJ per slot for both RSUs at K = 20 (0.63 mJ per vehicle). Stage 7 accepted 24 Oct.
+
+## Local Windows setup (24 Oct 2026)
+
+- On Windows 11 with Python 3.11.9 and the newest libraries, 3 of 188 tests failed. None was a model error.
+- Two CVXPY comparison tests: our solver was 0.024 % above CVXPY, but the test allows 0.01 %. Newer CVXPY/CLARABEL reach a slightly better optimum. requirements.txt now pins exact versions (numpy 2.2.6, scipy 1.15.3, cvxpy 1.6.7, clarabel 0.10.0, ...), and with these both tests pass.
+- AL gradient test: at R_min = 12 the solver met the rate target exactly, so the penalty term was zero and the check had nothing to test. It now uses R_min = 16, where the term is active; the hand-written and finite-difference gradients agree to about 0.004 %.
+- Result: 188 passed.

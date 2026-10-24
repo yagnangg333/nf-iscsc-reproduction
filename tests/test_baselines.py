@@ -102,7 +102,7 @@ def test_al_gradient_matches_finite_difference():
 
     bf.solve_beams_lbfgs = spy
     try:
-        r = baselines.solve_benchmark18_lbfgs(slot, xi, pa, 12.0, outer=2, max_iter=50)
+        r = baselines.solve_benchmark18_lbfgs(slot, xi, pa, 16.0, outer=2, max_iter=50)
     finally:
         bf.solve_beams_lbfgs = orig
     extra = captured["extra"]
@@ -115,5 +115,5 @@ def test_al_gradient_matches_finite_difference():
     Wp, Wm = dict(W), dict(W)
     Wp[key], Wm[key] = W[key] + D, W[key] - D
     fd = (extra(Wp, R)[0] - extra(Wm, R)[0]) / 2
-    assert f > 0                                    # R_min = 12 is not met after 2 rounds, so the term is active
+    assert f > 0                                    # R_min = 16 is not met after 2 rounds, so the term is active
     assert fd == pytest.approx(np.real(np.trace(gW[key] @ D)), rel=1e-4)
