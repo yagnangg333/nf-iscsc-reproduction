@@ -78,7 +78,7 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Run the tests (188 tests, about 10 minutes on one core):
+Run the tests (189 tests, about 10 minutes on one core):
 
 ```bash
 pytest -q

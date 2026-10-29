@@ -110,6 +110,21 @@ def test_surrogate_gradient_finite_difference():
             assert fd == pytest.approx(np.real(np.trace(g @ D)), rel=1e-4, abs=1e-15)
 
 
+def test_fast_surrogate_matches_reference():
+    # surrogate() is a vectorised copy of surrogate_reference(), which follows (41a) line by line.
+    slot, d = _slot()
+    xi = allocation.to_matrix(allocation.greedy(d))
+    rho = np.full(xi.shape, 0.9)
+    W, R = _random_beams(slot, xi, np.random.default_rng(2))
+    f, (gW, gR) = bf.surrogate(slot, xi, W, R, rho, 1.1, grad=True)
+    f_ref, (gW_ref, gR_ref) = bf.surrogate_reference(slot, xi, W, R, rho, 1.1, grad=True)
+    assert f == pytest.approx(f_ref, rel=1e-9)
+    for key in W:
+        assert np.allclose(gW[key], gW_ref[key], rtol=1e-7, atol=1e-12 * np.abs(gW_ref[key]).max())
+    for g, g_ref in zip(gR, gR_ref):
+        assert np.allclose(g, g_ref, rtol=1e-7, atol=1e-12 * np.abs(g_ref).max())
+
+
 def test_lemma2_bound_is_conservative():
     # eta_S from (39) never exceeds the true rate of Eq. (13) (log(1 + x) <= x).
     slot, d = _slot(k=6, seed=4)

@@ -108,7 +108,6 @@ FLIP_PROB = 0.2                  # ASSUMED (gap 30): "greedy with random flip"
 SUBSPACE_TOL = 1e-9              # relative singular value cut for the beam subspace (exact up to this)
 LBFGS_MAX_ITER = 2000            # ASSUMED: iteration cap of our beamforming solver (final solves)
 LBFGS_SA_ITER = 60               # ASSUMED: iteration cap while SA scores candidate assignments (warm-started)
-MEG_MAX_ITER = 3000              # cap for the alternative MEG solver
 SA_T0 = 100.0                    # SA initial temperature (Alg. 2, line 11)
 SA_ALPHA = 0.95                  # ASSUMED (gap 28): standard geometric cooling
 SA_TMIN = 1e-3                   # ASSUMED (gap 28)

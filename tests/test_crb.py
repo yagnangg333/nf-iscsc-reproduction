@@ -1,6 +1,5 @@
 """Checks for crb.py: derivatives, FIM properties, scaling laws, and CRB vs Monte Carlo ML."""
 import numpy as np
-import pytest
 from scipy.optimize import minimize, minimize_scalar
 
 import config

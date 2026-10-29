@@ -459,7 +459,7 @@ def _eta_s(slot, xi, W, R, rho, iota):
 
 
 def full_rank_start(slot, xi, budget, start=None, mix=1e-3):
-    """Starting point for MEG: given beams (or matched beams) mixed with a little isotropic power,
+    """Starting point for the L-BFGS solver: given beams (or matched beams) mixed with a little isotropic power,
     rescaled so every RSU uses its whole budget."""
     W, R = start if start is not None else initial_beams(slot, xi, budget)
     W, R = dict(W), list(R)
@@ -480,65 +480,6 @@ def full_rank_start(slot, xi, budget, start=None, mix=1e-3):
         R[m] = scale * R[m] + iso
     W = {key: v for key, v in W.items() if xi[key[0], key[1]]}
     return W, R
-
-
-def solve_beams_meg(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start=None,
-                    max_iter=config.MEG_MAX_ITER, rtol=1e-8, floor=1e-14, trace=None):
-    """Alg. 3 line 3 by matrix exponentiated gradient with a backtracking line search.
-
-    The update X <- exp(log X - t G), rescaled so each RSU's matrices use the whole budget,
-    is a mirror-descent step on the PSD cone (Tsuda, Ratsch and Warmuth, JMLR 2005). It moves
-    small eigenvalues multiplicatively, which suits the CRB terms (which behave like 1/energy).
-    Every RSU spends its full budget: more power never raises (41a).
-    """
-    M, K = xi.shape
-    if np.any(p_avail <= 0):
-        return None
-    budget = p_avail / config.PT_W
-    W, R = full_rank_start(slot, xi, budget, start)
-    f, (gW, gR) = surrogate(slot, xi, W, R, rho, iota, eps, grad=True)
-    if not np.isfinite(f):
-        return None
-    gmax = max(max((np.abs(g).max() for g in gW.values()), default=0), max(np.abs(g).max() for g in gR))
-    t = 1.0 / max(gmax, 1e-12)
-    it = 0
-    for it in range(max_iter):
-        logs = {key: _logm(X, floor) for key, X in W.items()}
-        logs_r = [_logm(X, floor) for X in R]
-        while True:
-            Wn, Rn = {}, []
-            for m in range(M):
-                keys = [key for key in W if key[0] == m]
-                eig = [np.linalg.eigh(logs[key] - t * gW[key]) for key in keys]
-                eig.append(np.linalg.eigh(logs_r[m] - t * gR[m]))
-                top = max(w.max() for w, _ in eig)
-                tot = sum(np.exp(w - top).sum() for w, _ in eig)
-                mats = [(v * (np.exp(w - top) * budget[m] / tot)) @ v.conj().T for w, v in eig]
-                for key, X in zip(keys, mats[:-1]):
-                    Wn[key] = X
-                Rn.append(mats[-1])
-            fn = surrogate(slot, xi, Wn, Rn, rho, iota, eps)
-            if np.isfinite(fn) and fn <= f:
-                break
-            t *= 0.5
-            if t * gmax < 1e-14:
-                break
-        if not (np.isfinite(fn) and fn <= f):
-            break
-        fn, (gWn, gRn) = surrogate(slot, xi, Wn, Rn, rho, iota, eps, grad=True)
-        rel = abs(f - fn) / max(abs(f), 1e-12)
-        W, R, f, gW, gR = Wn, Rn, fn, gWn, gRn
-        t *= 1.5
-        if trace is not None:
-            trace.append(f)
-        if rel < rtol:
-            break
-    return dict(W=W, R=R, eta_S=_eta_s(slot, xi, W, R, rho, iota), status=f"meg_{it + 1}_iters", value=f)
-
-
-def _logm(X, floor):
-    w, v = np.linalg.eigh((X + X.conj().T) / 2)
-    return (v * np.log(np.maximum(w, floor))) @ v.conj().T
 
 
 def solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start=None,
@@ -632,13 +573,10 @@ def solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, start
 
 
 def solve_beams(slot, xi, rho, p_avail, iota, eps=config.EPS_WEIGHT, solver="LBFGS", start=None, max_iter=None):
-    """Alg. 3 line 3 with the chosen solver ("LBFGS", "MEG", "SPG", or a CVXPY solver name)."""
+    """Alg. 3 line 3 with the chosen solver ("LBFGS", "SPG", or a CVXPY solver name)."""
     kw = {} if max_iter is None else dict(max_iter=max_iter)
     if solver == "LBFGS":
         return solve_beams_lbfgs(slot, xi, rho, p_avail, iota, eps, start=start, **kw)
-    if solver == "MEG":
-        kw = {} if max_iter is None else dict(max_iter=max_iter)
-        return solve_beams_meg(slot, xi, rho, p_avail, iota, eps, start=start, **kw)
     if solver == "SPG":
         return solve_beams_spg(slot, xi, rho, p_avail, iota, eps, start=start)
     return solve_beams_cvx(slot, xi, rho, p_avail, iota, eps, solver=solver)

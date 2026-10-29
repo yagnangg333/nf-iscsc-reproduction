@@ -97,3 +97,9 @@
 - Two CVXPY comparison tests: our solver was 0.024 % above CVXPY, but the test allows 0.01 %. Newer CVXPY/CLARABEL reach a slightly better optimum. requirements.txt now pins exact versions (numpy 2.2.6, scipy 1.15.3, cvxpy 1.6.7, clarabel 0.10.0, ...), and with these both tests pass.
 - AL gradient test: at R_min = 12 the solver met the rate target exactly, so the penalty term was zero and the check had nothing to test. It now uses R_min = 16, where the term is active; the hand-written and finite-difference gradients agree to about 0.004 %.
 - Result: 188 passed.
+
+## Clean-up (29 Oct 2026)
+
+- Removed the unused MEG beamforming solver (`solve_beams_meg`, `_logm`, `config.MEG_MAX_ITER`). No experiment or test called it; L-BFGS is the solver in every run, SPG stays as a test cross-check.
+- Added a test that the fast `surrogate` matches `surrogate_reference` (value and gradient), so the readable reference version of (41a) is now checked instead of unused.
+- Removed an unused import in tests/test_crb.py. No model or result changed.
