@@ -159,6 +159,30 @@ config.py ──► scenario.py ──► (theta, d) of every car from every RSU
 
 ## 6. Running every stage
 
+### Why the work is split into stages
+
+The paper describes one big system. We built it in eight stages, and each stage had to pass its tests and be checked by the project owner before the next one started:
+
+| Stage | What it builds | Brief objective |
+|---|---|---|
+| 0 | Read the paper: parameters, gaps, no code | All |
+| 1 | Near-field channel, compared with far field | System model, near vs far field |
+| 2 | Road, RSUs and cars | System model |
+| 3 | PF, EKF and UKF tracking | Tracking filters |
+| 4 | Cramer-Rao bound | CRB as the sensing benchmark |
+| 5 | Assignment, beamforming, computing | Resource allocation and beamforming |
+| 6 | The 20% claim at 1, 10 and 100 Kb | Headline claim |
+| 7 | Measurements and report | Report and measurements |
+
+Why this order:
+
+1. **Each stage needs the one before it.** Tracking needs the channel and the road. The CRB needs the channel and the tracking results. Beamforming needs the CRB. The 20% claim needs everything.
+2. **A bug is caught where it starts.** If everything were built at once and the final rate came out wrong, there would be no way to tell whether the channel, the filter or the optimiser was at fault. For example, the wrong sign in Lemma 1 was caught in Stage 5 instead of hiding inside the Stage 6 numbers.
+3. **Each objective of the brief can be checked on its own.** The table above shows the mapping.
+4. **Every choice has a known place.** Each gap in the paper (noise units, power units and so on) was settled and written down at a fixed stage, in `results-log.md` and `docs/`. That makes the work easy to explain in the same order.
+
+### Commands
+
 All commands run from the repository root. Times are for 4 cores. `OMP_NUM_THREADS=1` keeps each worker on one core (faster here, and makes run times comparable).
 
 | Stage | Command | Time | Main outputs in `results/` |
