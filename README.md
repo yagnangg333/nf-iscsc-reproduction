@@ -92,6 +92,8 @@ python experiments/stage2_scenario.py                # road layout
 python experiments/stage5_computing.py               # Figs. 8 and 9
 ```
 
+For a live demonstration (about 5 minutes, Windows commands), see [`docs/demo-plan.md`](docs/demo-plan.md); `python experiments/demo_quick.py` runs a small check of Stages 1-5 in about 2 minutes.
+
 Plots and CSV files appear in `results/`. All the results from our full runs are already committed there, so you can look at them without running anything.
 
 ## 5. How the code is laid out
